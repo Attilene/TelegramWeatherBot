@@ -6,6 +6,8 @@ import com.github.prominence.openweathermap.api.WeatherRequester;
 import com.github.prominence.openweathermap.api.constants.Accuracy;
 import com.github.prominence.openweathermap.api.constants.Language;
 import com.github.prominence.openweathermap.api.constants.Unit;
+import com.github.prominence.openweathermap.api.model.response.HourlyForecast;
+import com.github.prominence.openweathermap.api.model.response.Weather;
 
 public class OpenWeatherParsing {
     OpenWeatherMapManager openWeatherMapManager;
@@ -16,21 +18,23 @@ public class OpenWeatherParsing {
 
     public String getCurWeatherByCity(String city) {
         WeatherRequester weatherRequester = openWeatherMapManager.getWeatherRequester();
-        return weatherRequester
+        Weather weatherResponse = weatherRequester
                 .setLanguage(Language.RUSSIAN)
                 .setUnitSystem(Unit.METRIC_SYSTEM)
                 .setAccuracy(Accuracy.ACCURATE)
-                .getByCityName(city)
-                .toString();
+                .getByCityName(city);
+        return weatherResponse.toString();
     }
 
     public String getTomWeatherByCity(String city) {
+        String[] strList;
         HourlyForecastRequester forecastRequester = openWeatherMapManager.getHourlyForecastRequester();
-        return forecastRequester
+        HourlyForecast forecastResponce = forecastRequester
                 .setLanguage(Language.RUSSIAN)
                 .setUnitSystem(Unit.METRIC_SYSTEM)
                 .setAccuracy(Accuracy.ACCURATE)
-                .getByCityName(city)
-                .toString();
+                .getByCityName(city);
+        strList = forecastResponce.toString().split("\n");
+        return strList[0] + "\n" + strList[1] + "\n" + String.join("\n", strList[11].trim().split(";"));
     }
 }
