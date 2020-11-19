@@ -23,6 +23,7 @@ public class Bot extends TelegramLongPollingBot{
     ReplyKeyboardMarkup replyKeyboardMarkup;
     List<KeyboardRow> keyboard;
     String city, subTime;
+    int subTimeH, subTimeM, subTimeS;
 
     public Bot(){
         subscribe = new HashMap<>();
@@ -31,10 +32,17 @@ public class Bot extends TelegramLongPollingBot{
         openWeatherParsing = new OpenWeatherParsing();
         city = "Moscow";
         subTime = "09:00:00";
+        subTimeH = 9;
+        subTimeM = 0;
+        subTimeS = 0;
     }
 
     public void setSubTime(String subTime) {
+        String[] subt = subTime.split(":");
         this.subTime = subTime;
+        this.subTimeH = Integer.parseInt(subt[0]);
+        this.subTimeM = Integer.parseInt(subt[1]);
+        this.subTimeS = Integer.parseInt(subt[2]);
     }
 
     @Override
@@ -130,7 +138,7 @@ public class Bot extends TelegramLongPollingBot{
         ApiContextInitializer.init();
         TelegramBotsApi botapi = new TelegramBotsApi();
         Bot bot = new Bot();
-//        bot.setSubTime("17:15:00");
+//        bot.setSubTime("18:26:00");
         try {
             botapi.registerBot(bot);
             SubscribeThread subThread = new SubscribeThread(bot);
