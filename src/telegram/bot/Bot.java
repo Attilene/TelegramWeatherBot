@@ -1,8 +1,5 @@
 package telegram.bot;
 
-import com.github.prominence.openweathermap.api.enums.Accuracy;
-import com.github.prominence.openweathermap.api.enums.Language;
-import com.github.prominence.openweathermap.api.enums.UnitSystem;
 import org.telegram.telegrambots.ApiContextInitializer;
 import org.telegram.telegrambots.meta.TelegramBotsApi;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -84,6 +81,7 @@ public class Bot extends TelegramLongPollingBot{
             log.log(Level.SEVERE, "Exception: ", e.toString());
         }
         OpenWeatherParsing openWeatherParsing = new OpenWeatherParsing();
-        System.out.println(openWeatherParsing.getCurWeatherByCity("London"));
+        System.out.println(openWeatherParsing.getCurWeatherByCity("Москва"));
+        System.out.println(openWeatherParsing.getTomWeatherByCity("Лондон"));
     }
 }

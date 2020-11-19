@@ -19,7 +19,7 @@
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/../openweathermap-java-api/out/artifacts/openweathermap_api_jar/openweathermap-api.jar!/" />
+          <root url="jar://$MODULE_DIR$/../openweathermap-java-api-1.2/out/artifacts/openweathermap_api_jar/openweathermap-api_1-2.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />

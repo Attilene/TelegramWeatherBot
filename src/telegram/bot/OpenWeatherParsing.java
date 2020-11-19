@@ -1,27 +1,36 @@
 package telegram.bot;
 
-import com.github.prominence.openweathermap.api.enums.Accuracy;
-import com.github.prominence.openweathermap.api.enums.Language;
-import com.github.prominence.openweathermap.api.enums.UnitSystem;
-import com.github.prominence.openweathermap.api.impl.OpenWeatherMapClient;
+import com.github.prominence.openweathermap.api.HourlyForecastRequester;
+import com.github.prominence.openweathermap.api.OpenWeatherMapManager;
+import com.github.prominence.openweathermap.api.WeatherRequester;
+import com.github.prominence.openweathermap.api.constants.Accuracy;
+import com.github.prominence.openweathermap.api.constants.Language;
+import com.github.prominence.openweathermap.api.constants.Unit;
 
 public class OpenWeatherParsing {
-    OpenWeatherMapClient openWeatherMapClient;
+    OpenWeatherMapManager openWeatherMapManager;
 
     public OpenWeatherParsing() {
-        openWeatherMapClient = new OpenWeatherMapClient("2d5ba0d2e4b46c41d9037fc141689ff8");
+         openWeatherMapManager = new OpenWeatherMapManager("2d5ba0d2e4b46c41d9037fc141689ff8");
     }
 
     public String getCurWeatherByCity(String city) {
-        return openWeatherMapClient
-                .currentWeather()
-                .single()
-                .byCityName(city)
-                .accuracy(Accuracy.ACCURATE)
-                .language(Language.RUSSIAN)
-                .unitSystem(UnitSystem.METRIC)
-                .retrieve()
-                .asJava()
+        WeatherRequester weatherRequester = openWeatherMapManager.getWeatherRequester();
+        return weatherRequester
+                .setLanguage(Language.RUSSIAN)
+                .setUnitSystem(Unit.METRIC_SYSTEM)
+                .setAccuracy(Accuracy.ACCURATE)
+                .getByCityName(city)
+                .toString();
+    }
+
+    public String getTomWeatherByCity(String city) {
+        HourlyForecastRequester forecastRequester = openWeatherMapManager.getHourlyForecastRequester();
+        return forecastRequester
+                .setLanguage(Language.RUSSIAN)
+                .setUnitSystem(Unit.METRIC_SYSTEM)
+                .setAccuracy(Accuracy.ACCURATE)
+                .getByCityName(city)
                 .toString();
     }
 }
