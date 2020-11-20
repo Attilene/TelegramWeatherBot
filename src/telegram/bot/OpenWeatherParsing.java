@@ -11,10 +11,16 @@ import com.github.prominence.openweathermap.api.model.response.Weather;
 
 public class OpenWeatherParsing {
     OpenWeatherMapManager openWeatherMapManager;
+    String apiToken;
 
     public OpenWeatherParsing() {
-         openWeatherMapManager = new OpenWeatherMapManager("2d5ba0d2e4b46c41d9037fc141689ff8");
+        apiToken = "2d5ba0d2e4b46c41d9037fc141689ff8";
+        openWeatherMapManager = new OpenWeatherMapManager(apiToken);
     }
+
+    public void setApiToken(String apiToken) { this.apiToken = apiToken; }
+
+    public String getApiToken() { return apiToken; }
 
     public String getCurWeatherByCity(String city) {
         WeatherRequester weatherRequester = openWeatherMapManager.getWeatherRequester();

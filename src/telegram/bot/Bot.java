@@ -22,10 +22,12 @@ public class Bot extends TelegramLongPollingBot{
     OpenWeatherParsing openWeatherParsing;
     ReplyKeyboardMarkup replyKeyboardMarkup;
     List<KeyboardRow> keyboard;
-    String city, subTime;
+    String city, subTime, botUsername, botToken;
     int subTimeH, subTimeM, subTimeS;
 
     public Bot(){
+        botUsername = "Bakanchik_Weather_bot";
+        botToken = "1449620104:AAEf-XIegq8h6P0JqzqnyzuutZuAAlav3ko";
         subscribe = new HashMap<>();
         start = new HashMap<>();
         log = Logger.getLogger(Bot.class.getName());
@@ -37,6 +39,10 @@ public class Bot extends TelegramLongPollingBot{
         subTimeS = 0;
     }
 
+    public void setBotToken(String botToken) { this.botToken = botToken; }
+
+    public void setBotUsername(String botUsername) { this.botUsername = botUsername; }
+
     public void setSubTime(String subTime) {
         String[] subt = subTime.split(":");
         this.subTime = subTime;
@@ -45,11 +51,17 @@ public class Bot extends TelegramLongPollingBot{
         this.subTimeS = Integer.parseInt(subt[2]);
     }
 
-    @Override
-    public String getBotUsername() { return "Bakanchik_Weather_bot"; }
+    public void getWeather(String chatId, String city) {
+        sendMsg(chatId, openWeatherParsing.getCurWeatherByCity(city));
+        sendMsg(chatId, "Погода на следующий день:");
+        sendMsg(chatId, openWeatherParsing.getTomWeatherByCity(city));
+    }
 
     @Override
-    public String getBotToken() { return "1449620104:AAEf-XIegq8h6P0JqzqnyzuutZuAAlav3ko"; }
+    public String getBotUsername() { return botUsername; }
+
+    @Override
+    public String getBotToken() { return botToken; }
 
     @Override
     public void onUpdateReceived(Update upd) {
@@ -99,13 +111,7 @@ public class Bot extends TelegramLongPollingBot{
 
     }
 
-    public void getWeather(String chatId, String city) {
-        sendMsg(chatId, openWeatherParsing.getCurWeatherByCity(city));
-        sendMsg(chatId, "Погода на следующий день:");
-        sendMsg(chatId, openWeatherParsing.getTomWeatherByCity(city));
-    }
-
-    public synchronized void setConstantButtons(SendMessage sendMessage) {
+    private synchronized void setConstantButtons(SendMessage sendMessage) {
         replyKeyboardMarkup = new ReplyKeyboardMarkup();
         sendMessage.setReplyMarkup(replyKeyboardMarkup);
         replyKeyboardMarkup.setSelective(true);
