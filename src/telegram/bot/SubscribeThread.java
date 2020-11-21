@@ -10,9 +10,9 @@ public class SubscribeThread {
     public SubscribeThread(Bot bot) {
         this.bot = bot;
         c = Calendar.getInstance();
-        c.set(Calendar.HOUR_OF_DAY, bot.subTimeH);
-        c.set(Calendar.MINUTE, bot.subTimeM);
-        c.set(Calendar.SECOND, bot.subTimeS);
+        c.set(Calendar.HOUR_OF_DAY, this.bot.subTimeH);
+        c.set(Calendar.MINUTE, this.bot.subTimeM);
+        c.set(Calendar.SECOND, this.bot.subTimeS);
         timer = new Timer();
     }
 

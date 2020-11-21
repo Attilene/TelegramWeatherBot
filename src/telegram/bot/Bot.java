@@ -10,6 +10,7 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMar
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardButton;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardRow;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
+import telegram.bot.Parsing.OpenWeatherParsing;
 
 import java.util.*;
 import java.util.logging.Level;
@@ -144,7 +145,6 @@ public class Bot extends TelegramLongPollingBot{
         ApiContextInitializer.init();
         TelegramBotsApi botapi = new TelegramBotsApi();
         Bot bot = new Bot();
-//        bot.setSubTime("18:26:00");
         try {
             botapi.registerBot(bot);
             SubscribeThread subThread = new SubscribeThread(bot);
