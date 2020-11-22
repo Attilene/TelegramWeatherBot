@@ -6,15 +6,12 @@ import com.google.gson.stream.JsonReader;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.math.BigDecimal;
 import java.net.HttpURLConnection;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 public class JSONParsingCurrentWeather extends JSONParsing {
-    Date date;
 
     public JSONParsingCurrentWeather() {}
 
@@ -77,26 +74,25 @@ public class JSONParsingCurrentWeather extends JSONParsing {
 
     @Override
     public String toString() {
-        date = new Date();
         String s = "Город: " +
                 city + "(" + id + ")\n" +
                 "Координаты: " +
                 "Широта: " + lat + "; " +
                 "Долгота: " + lon + "\n" +
                 "Страна: " + country + "\n" +
-                "Погода:";
+                "Погода: ";
         for (String weath: weather)
-            s = s + " " + weath + ",";
+            s = s + weath + ",";
         s = s.substring(0, s.length() - 1);
         s = s  + "\n" +
-                "Температура: " + String.format("%.2f", temp) + "°C\n" +
-                "Минимальная температура: " + String.format("%.2f", min_temp) + "°C\n" +
-                "Максимальная температура: " + String.format("%.2f", max_temp) + "°C\n" +
+                "Температура: " + String.format("%.2f", temp) + " °C\n" +
+                "Минимальная температура: " + String.format("%.2f", min_temp) + " °C\n" +
+                "Максимальная температура: " + String.format("%.2f", max_temp) + " °C\n" +
                 "Влажность: " + humid + "%\n" +
                 "Давление: " + press + " hPa\n" +
                 "Ветер: " + speed + " м/с, " + deg + " градусов" + "\n" +
                 "Облачность: " + clouds + "%\n" +
-                "Текущее время: " + date.toString();
+                "Текущее время: " + new Date().toString();
         return s;
     }
 }

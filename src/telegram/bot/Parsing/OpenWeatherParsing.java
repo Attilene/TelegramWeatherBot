@@ -1,19 +1,9 @@
 package telegram.bot.Parsing;
 
-import com.github.prominence.openweathermap.api.HourlyForecastRequester;
-import com.github.prominence.openweathermap.api.OpenWeatherMapManager;
-import com.github.prominence.openweathermap.api.WeatherRequester;
-import com.github.prominence.openweathermap.api.constants.Accuracy;
-import com.github.prominence.openweathermap.api.constants.Language;
-import com.github.prominence.openweathermap.api.constants.Unit;
-import com.github.prominence.openweathermap.api.model.response.HourlyForecast;
-import com.github.prominence.openweathermap.api.model.response.Weather;
-
 import java.net.HttpURLConnection;
 import java.net.URL;
 
 public class OpenWeatherParsing {
-    OpenWeatherMapManager openWeatherMapManager;
     String apiToken;
     HttpURLConnection urlConnection;
     private URL url;
@@ -38,19 +28,6 @@ public class OpenWeatherParsing {
         return jsonParsing.toString();
     }
 
-//    public String getTomWeatherByCity(String city) {
-//        openWeatherMapManager = new OpenWeatherMapManager(apiToken);
-//        String[] strList;
-//        HourlyForecastRequester forecastRequester = openWeatherMapManager.getHourlyForecastRequester();
-//        HourlyForecast forecastResponce = forecastRequester
-//                .setLanguage(Language.RUSSIAN)
-//                .setUnitSystem(Unit.METRIC_SYSTEM)
-//                .setAccuracy(Accuracy.ACCURATE)
-//                .getByCityName(city);
-//        strList = forecastResponce.toString().split("\n");
-//        return strList[0] + "\n" + strList[1] + "\n" + String.join("\n", strList[11].trim().split(";"));
-//    }
-
     public String getTomWeatherByCity(String city) throws Exception {
         Double lat, lon;
         url = new URL("http://api.openweathermap.org/data/2.5/weather?q=" + city + "&appid=" + apiToken);
@@ -65,13 +42,12 @@ public class OpenWeatherParsing {
                 "&exclude=current,minutely,daily,alerts&appid=" + apiToken);
         urlConnection = (HttpURLConnection) url.openConnection();
         jsonParsingTomorrowWeather = new JSONParsingTomorrowWeather();
+        jsonParsingTomorrowWeather.setCity(jsonParsing.getCity());
+        jsonParsingTomorrowWeather.setLat(lat);
+        jsonParsingTomorrowWeather.setLon(lon);
+        jsonParsingTomorrowWeather.setId(jsonParsing.getId());
+        jsonParsingTomorrowWeather.setCountry(jsonParsing.getCountry());
         jsonParsingTomorrowWeather.readJSON(urlConnection);
         return jsonParsingTomorrowWeather.toString();
-    }
-
-    public static void main(String[] args) throws Exception {
-        OpenWeatherParsing openWeatherParsing = new OpenWeatherParsing();
-//        System.out.println(openWeatherParsing.getCurWeatherByCity("Москва"));
-        System.out.println(openWeatherParsing.getTomWeatherByCity("Москва"));
     }
 }
