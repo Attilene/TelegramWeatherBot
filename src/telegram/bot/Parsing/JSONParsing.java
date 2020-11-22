@@ -1,15 +1,16 @@
 package telegram.bot.Parsing;
 
-import com.google.gson.Gson;
 import com.google.gson.stream.JsonReader;
 
-import java.io.FileReader;
 import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.util.List;
 
-public class JSONParsing {
-    Double lon, lat;
-    String namecity;
-    JsonReader jsonReader;
+public abstract class JSONParsing {
+    Double lon, lat, speed, temp, max_temp, min_temp;
+    Integer id, press, humid, clouds, deg;
+    String city, country;
+    List<String> weather;
 
     public JSONParsing() {}
 
@@ -17,40 +18,61 @@ public class JSONParsing {
 
     public void setLon(Double lon) { this.lon = lon; }
 
-    public void setNamecity(String name) { this.namecity = name; }
+    public void setCity(String name) { this.city = name; }
+
+    public void setId(Integer id) { this.id = id; }
+
+    public void setCountry(String country) { this.country = country; }
+
+    public void setClouds(Integer clouds) { this.clouds = clouds; }
+
+    public void setSpeed(Double speed) { this.speed = speed; }
+
+    public void setDeg(Integer deg) { this.deg = deg; }
+
+    public void setHumid(Integer humid) { this.humid = humid; }
+
+    public void setTemp(Double temp) { this.temp = temp; }
+
+    public void setMax_temp(Double max_temp) { this.max_temp = max_temp; }
+
+    public void setMin_temp(Double min_temp) { this.min_temp = min_temp; }
+
+    public void setPress(Integer press) { this.press = press; }
+
+    public void setWeather(List<String> weather) { this.weather = weather; }
 
     public Double getLat() { return lat; }
 
     public Double getLon() { return lon; }
 
-    public String getNamecity() { return namecity; }
+    public String getCity() { return city; }
 
-    public void readJSON() throws IOException {
-//        JsonReader jsonReader = new JsonReader(new InputStreamReader(urlConnection.getInputStream(), StandardCharsets.UTF_8));
-        FileReader fileReader = new FileReader("C:/Users/Артем/Desktop/Parse.json");
-        jsonReader = new JsonReader(fileReader);
-        jsonReader.beginObject();
-        while (jsonReader.hasNext()) {
-            String name = jsonReader.nextName();
-            switch (name) {
-                case "name" -> namecity = jsonReader.nextString();
-                case "coord" -> readJSONCoord(jsonReader);
-                default -> jsonReader.skipValue();
-            }
-        }
-        jsonReader.endObject();
-    }
+    public Integer getId() { return id; }
 
-    public void readJSONCoord(JsonReader reader) throws IOException {
-        reader.beginObject();
-        while (reader.hasNext()) {
-            String name = reader.nextName();
-            switch (name) {
-                case "lon" -> lon = jsonReader.nextDouble();
-                case "lat" -> lat = jsonReader.nextDouble();
-                default -> reader.skipValue();
-            }
-        }
-        reader.endObject();
-    }
+    public String getCountry() { return country; }
+
+    public Double getSpeed() { return speed; }
+
+    public Integer getDeg() { return deg; }
+
+    public Double getTemp() { return temp; }
+
+    public Double getMax_temp() { return max_temp; }
+
+    public Double getMin_temp() { return min_temp; }
+
+    public Integer getClouds() { return clouds; }
+
+    public Integer getHumid() { return humid; }
+
+    public Integer getPress() { return press; }
+
+    public List<String> getWeather() { return weather; }
+
+    public abstract void readJSON(HttpURLConnection urlConnection) throws IOException;
+
+    public abstract void readJSONSubParams(JsonReader jsonReader) throws IOException;
+
+    public abstract void readJSONWeather(JsonReader jsonReader) throws IOException;
 }

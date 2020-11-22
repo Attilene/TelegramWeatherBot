@@ -52,9 +52,9 @@ public class Bot extends TelegramLongPollingBot{
         this.subTimeS = Integer.parseInt(subt[2]);
     }
 
-    public void getWeather(String chatId, String city) {
+    public void getWeather(String chatId, String city) throws Exception {
         sendMsg(chatId, openWeatherParsing.getCurWeatherByCity(city));
-        sendMsg(chatId, "Погода на следующий день:");
+        sendMsg(chatId, "Погода на сутки:");
         sendMsg(chatId, openWeatherParsing.getTomWeatherByCity(city));
     }
 
@@ -101,10 +101,14 @@ public class Bot extends TelegramLongPollingBot{
                     !getStr.equals("/unsubscribe") & !getStr.equals("Подписаться на рассылку") &
                     !getStr.equals("Отписаться от рассылки")) {
                 try {
-                    getWeather(String.valueOf(chatId), getStr);
-                    this.city = getStr;
+                    if (!openWeatherParsing.getCurWeatherByCity(getStr).equals("Такого города не существует.\nПовторите попытку")) {
+                        getWeather(String.valueOf(chatId), getStr);
+                        this.city = getStr;
+                    }
+                    else
+                        sendMsg(String.valueOf(chatId), "Такого города не существует.\nПовторите попытку");
                 } catch (Exception e) {
-                    sendMsg(String.valueOf(chatId), "Такого города не существует.\nПовторите попытку");
+                    e.printStackTrace();
                 }
             }
         }

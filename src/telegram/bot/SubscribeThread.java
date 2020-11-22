@@ -20,9 +20,13 @@ public class SubscribeThread {
         timer.schedule(new TimerTask() {
             @Override
             public void run() {
-                for (Map.Entry<Long, Boolean> ent: bot.subscribe.entrySet()) {
-                    if (ent.getValue()) bot.getWeather(String.valueOf(ent.getKey()), bot.city);
-                }
+                for (Map.Entry<Long, Boolean> ent: bot.subscribe.entrySet())
+                    if (ent.getValue())
+                        try {
+                            bot.getWeather(String.valueOf(ent.getKey()), bot.city);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
             }
         }, c.getTime(), 86400000);
     }
