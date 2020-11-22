@@ -8,8 +8,8 @@ Weather information is taken from the [OpenWeather](https://openweathermap.org/)
 <h5> Necessary libraries for the bot to work: </h5>
 
 [<li>JDK 15.0.1</li>](https://jdk.java.net/15/)
-[<li>TelegramBots</li>](https://github.com/rubenlagus/TelegramBots)
-[<li>Gson</li>](https://github.com/google/gson)
+[<li>TelegramBots 4.9.2</li>](https://github.com/rubenlagus/TelegramBots/releases/tag/v4.9)
+[<li>Gson 2.8.6</li>](https://github.com/google/gson/releases/tag/gson-parent-2.8.6)
 
 
 <h2> Author: </h2> 
@@ -18,6 +18,6 @@ Student of Financial University
 
 Faculty of Information Technology and Big Data Analysis
 
-<h4> Version: 0.9 </h4>
+<h4> Version: 1.0 </h4>
 
-23.11.2020
+<h6> 23.11.2020 </h6>
