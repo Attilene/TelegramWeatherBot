@@ -1,10 +1,10 @@
-package telegram.bot.Parsing;
+package telegram.bot.Parsing.JSONProcessing;
 
 import com.google.gson.stream.JsonReader;
 
-import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.util.List;
+import java.util.logging.Logger;
 
 public abstract class JSONParsing {
     Double lon, lat, speed, temp, max_temp, min_temp;
@@ -70,9 +70,9 @@ public abstract class JSONParsing {
 
     public List<String> getWeather() { return weather; }
 
-    public abstract void readJSON(HttpURLConnection urlConnection) throws IOException;
+    public abstract void readJSON(HttpURLConnection urlConnection);
 
-    public abstract void readJSONSubParams(JsonReader jsonReader) throws IOException;
+    public abstract void readJSONSubParams(JsonReader jsonReader);
 
-    public abstract void readJSONWeather(JsonReader jsonReader) throws IOException;
+    public abstract void readJSONWeather(JsonReader jsonReader);
 }

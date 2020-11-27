@@ -1,7 +1,9 @@
-<h1> Telegram weather chatbot </h1>
+<h1> Telegram weather chat-bot </h1>
 <h3> Description: </h3>
 
-**Telegram** chatbot that allows you to get the current weather and the weather for the day based on the city you enter
+**Telegram** chat-bot that allows you to get the current weather, 
+the weather for the day and the weather for the week 
+based on the city you enter
 
 Weather information is taken from the [OpenWeather](https://openweathermap.org/) website
 
@@ -23,6 +25,6 @@ Student of Financial University
 
 Faculty of Information Technology and Big Data Analysis
 
-<h4> Version: 1.0 </h4>
+<h4> Version: 1.1 </h4>
 
-<h6> 23.11.2020 </h6>
+<h6> 27.11.2020 </h6>

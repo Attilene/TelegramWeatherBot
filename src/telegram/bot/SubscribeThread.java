@@ -23,7 +23,7 @@ public class SubscribeThread {
                 for (Map.Entry<Long, Boolean> ent: bot.subscribe.entrySet())
                     if (ent.getValue())
                         try {
-                            bot.getWeather(String.valueOf(ent.getKey()), bot.city);
+                            bot.getWeatherByString(String.valueOf(ent.getKey()), bot.city.get(ent.getKey()));
                         } catch (Exception e) {
                             e.printStackTrace();
                         }

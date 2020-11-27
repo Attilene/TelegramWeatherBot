@@ -16,14 +16,15 @@ import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class Bot extends TelegramLongPollingBot{
+public class Bot extends TelegramLongPollingBot {
     static Logger log;
     Map<Long, Boolean> subscribe;
     Map<Long, Boolean> start;
+    Map<Long, String> city;
     OpenWeatherParsing openWeatherParsing;
     ReplyKeyboardMarkup replyKeyboardMarkup;
     List<KeyboardRow> keyboard;
-    String city, subTime, botUsername, botToken;
+    String subTime, botUsername, botToken;
     int subTimeH, subTimeM, subTimeS;
 
     public Bot(){
@@ -31,9 +32,9 @@ public class Bot extends TelegramLongPollingBot{
         botToken = "1449620104:AAEf-XIegq8h6P0JqzqnyzuutZuAAlav3ko";
         subscribe = new HashMap<>();
         start = new HashMap<>();
+        city = new HashMap<>();
         log = Logger.getLogger(Bot.class.getName());
         openWeatherParsing = new OpenWeatherParsing();
-        city = "Moscow";
         subTime = "09:00:00";
         subTimeH = 9;
         subTimeM = 0;
@@ -45,14 +46,14 @@ public class Bot extends TelegramLongPollingBot{
     public void setBotUsername(String botUsername) { this.botUsername = botUsername; }
 
     public void setSubTime(String subTime) {
-        String[] subt = subTime.split(":");
+        String[] subT = subTime.split(":");
         this.subTime = subTime;
-        this.subTimeH = Integer.parseInt(subt[0]);
-        this.subTimeM = Integer.parseInt(subt[1]);
-        this.subTimeS = Integer.parseInt(subt[2]);
+        this.subTimeH = Integer.parseInt(subT[0]);
+        this.subTimeM = Integer.parseInt(subT[1]);
+        this.subTimeS = Integer.parseInt(subT[2]);
     }
 
-    public void getWeather(String chatId, String city) throws Exception {
+    public void getWeatherByString(String chatId, String city) throws Exception {
         sendMsg(chatId, openWeatherParsing.getCurWeatherByCity(city));
         sendMsg(chatId, "Погода на сутки:");
         sendMsg(chatId, openWeatherParsing.getTomWeatherByCity(city));
@@ -76,7 +77,23 @@ public class Bot extends TelegramLongPollingBot{
                 sendMsg(String.valueOf(chatId), "Добро пожаловать в самый лучший погодный чат-бот в мире." +
                         "\nВведите название города для вывода текущей погоды и прогноза на сутки");
                 start.put(chatId, true);
+                city.put(chatId, "Москва");
                 subscribe.put(chatId, false);
+            }
+            else if (getStr.toLowerCase().equals("текущая погода") | getStr.toLowerCase().equals("погода")) {
+                try {
+                    sendMsg(String.valueOf(chatId), openWeatherParsing.getCurWeatherByCity(city.get(chatId)));
+                } catch (Exception e) { log.log(Level.SEVERE, "Exception: ", e.toString()); }
+            }
+            else if (getStr.toLowerCase().equals("погода на сутки")) {
+                try {
+                    sendMsg(String.valueOf(chatId), openWeatherParsing.getTomWeatherByCity(city.get(chatId)));
+                } catch (Exception e) { log.log(Level.SEVERE, "Exception: ", e.toString()); }
+            }
+            else if (getStr.toLowerCase().equals("погода на неделю")) {
+                try {
+                    sendMsg(String.valueOf(chatId), openWeatherParsing.getWeekWeatherByCity(city.get(chatId)));
+                } catch (Exception e) { log.log(Level.SEVERE, "Exception: ", e.toString()); }
             }
             else if ((getStr.equals("/subscribe") | getStr.equals("subscribe")
                     | getStr.toLowerCase().equals("подписаться на рассылку")) & !subscribe.get(chatId)) {
@@ -97,23 +114,17 @@ public class Bot extends TelegramLongPollingBot{
                     || getStr.toLowerCase().equals("отписаться от рассылки")) & !subscribe.get(chatId)) {
                 sendMsg(String.valueOf(chatId), "Вы уже отписались от ежедневной рассылки");
             }
-            else if (start.get(chatId) & !getStr.equals("/start") & !getStr.equals("/subscribe") &
-                    !getStr.equals("/unsubscribe") & !getStr.equals("Подписаться на рассылку") &
-                    !getStr.equals("Отписаться от рассылки")) {
+            else if (start.get(chatId)){
                 try {
                     if (!openWeatherParsing.getCurWeatherByCity(getStr).equals("Такого города не существует.\nПовторите попытку")) {
-                        getWeather(String.valueOf(chatId), getStr);
-                        this.city = getStr;
+                        getWeatherByString(String.valueOf(chatId), getStr);
+                        city.put(chatId, getStr);
                     }
-                    else
-                        sendMsg(String.valueOf(chatId), "Такого города не существует.\nПовторите попытку");
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+                    else sendMsg(String.valueOf(chatId), "Такого города не существует.\nПовторите попытку");
+                } catch (Exception e) { log.log(Level.SEVERE, "Exception: ", e.toString()); }
             }
         }
         System.gc();
-
     }
 
     private synchronized void setConstantButtons(SendMessage sendMessage) {
@@ -124,11 +135,18 @@ public class Bot extends TelegramLongPollingBot{
         replyKeyboardMarkup.setOneTimeKeyboard(false);
         keyboard = new ArrayList<>();
         KeyboardRow keyboardFirstRow = new KeyboardRow();
-        keyboardFirstRow.add(new KeyboardButton("Подписаться на рассылку"));
         KeyboardRow keyboardSecondRow = new KeyboardRow();
-        keyboardSecondRow.add(new KeyboardButton("Отписаться от рассылки"));
+        KeyboardRow keyboardThirdRow = new KeyboardRow();
+        KeyboardRow keyboardFourthRow = new KeyboardRow();
+        keyboardFirstRow.add(new KeyboardButton("Текущая погода"));
+        keyboardSecondRow.add(new KeyboardButton("Погода на сутки"));
+        keyboardThirdRow.add(new KeyboardButton("Погода на неделю"));
+        keyboardFourthRow.add(new KeyboardButton("Подписаться на рассылку"));
+        keyboardFourthRow.add(new KeyboardButton("Отписаться от рассылки"));
         keyboard.add(keyboardFirstRow);
         keyboard.add(keyboardSecondRow);
+        keyboard.add(keyboardThirdRow);
+        keyboard.add(keyboardFourthRow);
         replyKeyboardMarkup.setKeyboard(keyboard);
     }
 
@@ -147,10 +165,10 @@ public class Bot extends TelegramLongPollingBot{
 
     public static void main(String[] args) {
         ApiContextInitializer.init();
-        TelegramBotsApi botapi = new TelegramBotsApi();
+        TelegramBotsApi botApi = new TelegramBotsApi();
         Bot bot = new Bot();
         try {
-            botapi.registerBot(bot);
+            botApi.registerBot(bot);
             SubscribeThread subThread = new SubscribeThread(bot);
             subThread.start();
         } catch (TelegramApiException e) {
