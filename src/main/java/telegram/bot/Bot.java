@@ -20,6 +20,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class Bot extends TelegramLongPollingBot {
+    private static final Map<String, String> getenv = System.getenv();
     static Logger log;
     Map<Long, Boolean> subscribe;
     Map<Long, Boolean> start;
@@ -30,10 +31,10 @@ public class Bot extends TelegramLongPollingBot {
     String subTime, botUsername, botToken;
     int subTimeH, subTimeM, subTimeS;
 
-    public Bot(){
+    public Bot(String botUsername, String botToken){
         super();
-        botUsername = "Bakanchik_Weather_bot";
-        botToken = "1449620104:AAEf-XIegq8h6P0JqzqnyzuutZuAAlav3ko";
+        this.botUsername = botUsername;
+        this.botToken = botToken;
         subscribe = new HashMap<>();
         start = new HashMap<>();
         city = new HashMap<>();
@@ -170,7 +171,7 @@ public class Bot extends TelegramLongPollingBot {
     public static void main(String[] args) {
         ApiContextInitializer.init();
         TelegramBotsApi botApi = new TelegramBotsApi();
-        Bot bot = new Bot();
+        Bot bot = new Bot(getenv.get("BOT_USERNAME"), getenv.get("BOT_TOKEN"));
         try {
             botApi.registerBot(bot);
             SubscribeThread subThread = new SubscribeThread(bot);
