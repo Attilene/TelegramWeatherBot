@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Diagram>
+  <ID>JAVA</ID>
+  <OriginalElement>telegram.bot</OriginalElement>
+  <nodes>
+    <node x="25.0" y="195.0">telegram.bot.Bot</node>
+    <node x="86.5" y="720.0">telegram.bot.SubscribeThread</node>
+  </nodes>
+  <notes />
+  <edges />
+  <settings layout="Hierarchic Group" zoom="0.5747460087082727" x="170.5" y="529.5" />
+  <SelectedNodes>
+    <node>telegram.bot.Bot</node>
+  </SelectedNodes>
+  <Categories>
+    <Category>Fields</Category>
+    <Category>Constructors</Category>
+    <Category>Methods</Category>
+    <Category>Properties</Category>
+    <Category>Inner Classes</Category>
+  </Categories>
+  <SCOPE>All</SCOPE>
+  <VISIBILITY>private</VISIBILITY>
+</Diagram>
+
