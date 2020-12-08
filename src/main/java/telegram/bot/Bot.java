@@ -138,6 +138,7 @@ public class Bot extends TelegramLongPollingBot {
             }
             else if (start.get(chatId)){
                 if (!openWeatherParsing.getCurWeatherByCity(getStr).equals("Такого города не существует.\nПовторите попытку")) {
+                    log.info("{} changed their current location to {}", users.get(chatId), getStr);
                     getWeatherByString(users.get(chatId), String.valueOf(chatId), getStr);
                     city.put(chatId, getStr);
                 }
