@@ -1,5 +1,7 @@
 package telegram.bot;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.telegram.telegrambots.ApiContextInitializer;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.TelegramBotsApi;
@@ -16,29 +18,31 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class Bot extends TelegramLongPollingBot {
+    private static final Logger log = LogManager.getLogger(Bot.class);
     private static final Map<String, String> getenv = System.getenv();
-    static Logger log;
     Map<Long, Boolean> subscribe;
     Map<Long, Boolean> start;
     Map<Long, String> city;
+    Map<Long, String> users;
     OpenWeatherParsing openWeatherParsing;
     ReplyKeyboardMarkup replyKeyboardMarkup;
     List<KeyboardRow> keyboard;
     String subTime, botUsername, botToken;
     int subTimeH, subTimeM, subTimeS;
 
-    public Bot(String botUsername, String botToken){
+//    public Bot(String botUsername, String botToken){
+    public Bot(){
         super();
-        this.botUsername = botUsername;
-        this.botToken = botToken;
+        botUsername = "Bakanchik_Weather_bot";
+        botToken = "1449620104:AAEf-XIegq8h6P0JqzqnyzuutZuAAlav3ko";
+//        this.botUsername = botUsername;
+//        this.botToken = botToken;
         subscribe = new HashMap<>();
+        users = new HashMap<>();
         start = new HashMap<>();
         city = new HashMap<>();
-        log = Logger.getLogger(Bot.class.getName());
         openWeatherParsing = new OpenWeatherParsing();
         subTime = "09:00:00";
         subTimeH = 9;
@@ -56,13 +60,18 @@ public class Bot extends TelegramLongPollingBot {
         this.subTimeH = Integer.parseInt(subT[0]);
         this.subTimeM = Integer.parseInt(subT[1]);
         this.subTimeS = Integer.parseInt(subT[2]);
+        log.info("A new mailing time has been set");
     }
 
-    public void getWeatherByString(String chatId, String city) throws Exception {
-        sendMsg(chatId, openWeatherParsing.getCurWeatherByCity(city));
-        sendMsg(chatId, "Погода на сутки:");
-        sendMsg(chatId, openWeatherParsing.getTomWeatherByCity(city));
+    public void getWeatherByString(String username, String chatId, String city) {
+        sendMsg(username, chatId, openWeatherParsing.getCurWeatherByCity(city));
+        log.info("Current weather for the " + city + " was sent to the " + username);
+        sendMsg(username, chatId, "Погода на сутки:");
+        sendMsg(username, chatId, openWeatherParsing.getTomWeatherByCity(city));
+        log.info("Weather forecast for the day for the " + city + " was sent to the " + username);
     }
+
+    public String getSubTime() { return subTime; }
 
     @Override
     public String getBotUsername() { return botUsername; }
@@ -76,58 +85,71 @@ public class Bot extends TelegramLongPollingBot {
             Message inMsg = upd.getMessage();
             Long chatId = inMsg.getChatId();
             String getStr = inMsg.getText();
+            users.putIfAbsent(chatId, inMsg.getFrom().getUserName());
             start.putIfAbsent(chatId, false);
-            if ((getStr.equals("/start") | getStr.equals("start") | getStr.toLowerCase().equals("старт"))
+            if ((getStr.equals("/start") | getStr.equals("start") | getStr.equalsIgnoreCase("старт"))
                     & !start.get(chatId)) {
-                sendMsg(String.valueOf(chatId), "Добро пожаловать в самый лучший погодный чат-бот в мире." +
-                        "\nВведите название города для вывода текущей погоды и прогноза на сутки");
+                sendMsg(users.get(chatId), String.valueOf(chatId), "Добро пожаловать в самый лучший погодный чат-бот в мире." +
+                        "\nВведите название города для вывода текущей погоды и прогноза на сутки. " +
+                        "По умолчанию информация о погоде выводится по городу Москва");
                 start.put(chatId, true);
                 city.put(chatId, "Москва");
                 subscribe.put(chatId, false);
+                log.info("{} has connected to the bot", users.get(chatId));
             }
-            else if (getStr.toLowerCase().equals("текущая погода") | getStr.toLowerCase().equals("погода")) {
-                try {
-                    sendMsg(String.valueOf(chatId), openWeatherParsing.getCurWeatherByCity(city.get(chatId)));
-                } catch (Exception e) { log.log(Level.SEVERE, "Exception: ", e.toString()); }
+            else if ((getStr.equalsIgnoreCase("текущая погода") | getStr.equalsIgnoreCase("погода"))
+                    && start.get(chatId)) {
+                sendMsg(users.get(chatId), String.valueOf(chatId), openWeatherParsing.getCurWeatherByCity(city.get(chatId)));
+                log.info("Current weather for the " + city.get(chatId) + " was sent to the " + users.get(chatId));
             }
-            else if (getStr.toLowerCase().equals("погода на сутки")) {
-                try {
-                    sendMsg(String.valueOf(chatId), openWeatherParsing.getTomWeatherByCity(city.get(chatId)));
-                } catch (Exception e) { log.log(Level.SEVERE, "Exception: ", e.toString()); }
+            else if (getStr.equalsIgnoreCase("погода на сутки") && start.get(chatId)) {
+                sendMsg(users.get(chatId), String.valueOf(chatId), openWeatherParsing.getTomWeatherByCity(city.get(chatId)));
+                log.info("Weather forecast for the day for the " + city.get(chatId) + " was sent to the " + users.get(chatId));
             }
-            else if (getStr.toLowerCase().equals("погода на неделю")) {
-                try {
-                    sendMsg(String.valueOf(chatId), openWeatherParsing.getWeekWeatherByCity(city.get(chatId)));
-                } catch (Exception e) { log.log(Level.SEVERE, "Exception: ", e.toString()); }
+            else if (getStr.equalsIgnoreCase("погода на неделю") && start.get(chatId)) {
+                sendMsg(users.get(chatId), String.valueOf(chatId), openWeatherParsing.getWeekWeatherByCity(city.get(chatId)));
+                log.info("Weather forecast for the week for the " + city.get(chatId) + " was sent to the " + users.get(chatId));
             }
             else if ((getStr.equals("/subscribe") | getStr.equals("subscribe")
-                    | getStr.toLowerCase().equals("подписаться на рассылку")) & !subscribe.get(chatId)) {
-                sendMsg(String.valueOf(chatId), "Вы подписались на ежедневную рассылку прогноза погоды за сутки");
-                sendMsg(String.valueOf(chatId), "Рассылка проходит в " + subTime);
+                    | getStr.equalsIgnoreCase("подписаться на рассылку")) & !subscribe.get(chatId)) {
+                sendMsg(users.get(chatId), String.valueOf(chatId),
+                        "Вы подписались на ежедневную рассылку прогноза погоды на сутки по городу: " + city.get(chatId));
+                sendMsg(users.get(chatId), String.valueOf(chatId),
+                        "Для изменения города, по которому будет производится рассылка, просто напишите новый город в чат");
+                sendMsg(users.get(chatId), String.valueOf(chatId), "Рассылка проходит в " + subTime);
                 subscribe.put(chatId, true);
+                log.info("Subscription issued to the " + users.get(chatId));
             }
             else if ((getStr.equals("/subscribe") || getStr.equals("subscribe")
-                    || getStr.toLowerCase().equals("подписаться на рассылку")) & subscribe.get(chatId)) {
-                sendMsg(String.valueOf(chatId), "Вы уже подписались на ежедневную рассылку");
+                    || getStr.equalsIgnoreCase("подписаться на рассылку")) & subscribe.get(chatId)) {
+                sendMsg(users.get(chatId), String.valueOf(chatId), "Вы уже подписались на ежедневную рассылку");
+                log.info("Subscription issued to the " + users.get(chatId));
             }
             else if ((getStr.equals("/unsubscribe") | getStr.equals("unsubscribe")
-                    | getStr.toLowerCase().equals("отписаться от рассылки")) & subscribe.get(chatId)) {
-                sendMsg(String.valueOf(chatId), "Вы отписались от ежедневной рассылки прогноза погоды за сутки");
+                    | getStr.equalsIgnoreCase("отписаться от рассылки")) & subscribe.get(chatId)) {
+                sendMsg(users.get(chatId), String.valueOf(chatId), "Вы отписались от ежедневной рассылки прогноза погоды за сутки");
                 subscribe.put(chatId, false);
+                log.info(users.get(chatId) + " has already subscribed");
             }
             else if ((getStr.equals("/unsubscribe") || getStr.equals("unsubscribe")
-                    || getStr.toLowerCase().equals("отписаться от рассылки")) & !subscribe.get(chatId)) {
-                sendMsg(String.valueOf(chatId), "Вы уже отписались от ежедневной рассылки");
+                    || getStr.equalsIgnoreCase("отписаться от рассылки")) & !subscribe.get(chatId)) {
+                sendMsg(users.get(chatId), String.valueOf(chatId), "Вы уже отписались от ежедневной рассылки");
+                log.info("Subscription has already been canceled for the " + users.get(chatId));
             }
             else if (start.get(chatId)){
-                try {
-                    if (!openWeatherParsing.getCurWeatherByCity(getStr).equals("Такого города не существует.\nПовторите попытку")) {
-                        getWeatherByString(String.valueOf(chatId), getStr);
-                        city.put(chatId, getStr);
-                    }
-                    else sendMsg(String.valueOf(chatId), "Такого города не существует.\nПовторите попытку");
-                } catch (Exception e) { log.log(Level.SEVERE, "Exception: ", e.toString()); }
+                if (!openWeatherParsing.getCurWeatherByCity(getStr).equals("Такого города не существует.\nПовторите попытку")) {
+                    getWeatherByString(users.get(chatId), String.valueOf(chatId), getStr);
+                    city.put(chatId, getStr);
+                }
+                else {
+                    sendMsg(users.get(chatId), String.valueOf(chatId), "Такого города не существует\nПовторите попытку");
+                    log.warn(users.get(chatId) + " is trying to get the weather for an unknown location '" + getStr + "'.");
+                }
             }
+        }
+        else {
+            log.error("Update doesn't have a message!");
+            throw new IllegalStateException("Update doesn't have a message!");
         }
         System.gc();
     }
@@ -155,29 +177,31 @@ public class Bot extends TelegramLongPollingBot {
         replyKeyboardMarkup.setKeyboard(keyboard);
     }
 
-    public synchronized void sendMsg(String chatId, String msg) {
+    public synchronized void sendMsg(String username, String chatId, String msg) {
         SendMessage sMsg = new SendMessage();
         sMsg.setChatId(chatId);
         sMsg.setText(msg);
         try {
             setConstantButtons(sMsg);
             execute(sMsg);
-        } catch (TelegramApiException e) {
-            log.log(Level.SEVERE, "Exception: ", e.toString());
-        }
+        } catch (TelegramApiException e) { log.error("Error while sending message to " + username + "!", e); }
         System.gc();
     }
 
     public static void main(String[] args) {
-        ApiContextInitializer.init();
-        TelegramBotsApi botApi = new TelegramBotsApi();
-        Bot bot = new Bot(getenv.get("BOT_USERNAME"), getenv.get("BOT_TOKEN"));
         try {
+            log.info("Initializing API context...");
+            ApiContextInitializer.init();
+            TelegramBotsApi botApi = new TelegramBotsApi();
+            log.info("Registering Bot...");
+    //        Bot bot = new Bot(getenv.get("BOT_USERNAME"), getenv.get("BOT_TOKEN"));
+            Bot bot = new Bot();
             botApi.registerBot(bot);
+            log.info("Bot is ready for work!");
+            log.info("Starting the subscription mailing stream...");
             SubscribeThread subThread = new SubscribeThread(bot);
             subThread.start();
-        } catch (TelegramApiException e) {
-            log.log(Level.SEVERE, "Exception: ", e.toString());
-        }
+            log.info("The subscription mailing stream is work!");
+        } catch (TelegramApiException e) { log.error("Error while initializing bot!", e); }
     }
 }

@@ -1,11 +1,13 @@
 package telegram.bot.Parsing.JSONProcessing;
 
 import com.google.gson.stream.JsonReader;
+import org.apache.logging.log4j.Logger;
 
 import java.net.HttpURLConnection;
 import java.util.List;
 
 public abstract class JSONParsing {
+    protected Logger log;
     Double lon, lat, speed, temp, max_temp, min_temp;
     Integer id, press, humid, clouds, deg;
     String city, country;

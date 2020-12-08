@@ -3,7 +3,9 @@ package telegram.bot.Parsing.JSONProcessing;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.stream.JsonReader;
+import org.apache.logging.log4j.LogManager;
 
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.nio.charset.StandardCharsets;
@@ -26,6 +28,7 @@ public class JSONParsingTomorrowWeather extends JSONParsing {
         cloudsList = new ArrayList<>();
         degList = new ArrayList<>();
         weatherList = new ArrayList<>();
+        log = LogManager.getLogger(JSONParsingWeekWeather.class);
     }
 
     @Override
@@ -40,7 +43,7 @@ public class JSONParsingTomorrowWeather extends JSONParsing {
                 else jsonReader.skipValue();
             }
             jsonReader.endObject();
-        } catch (Exception e) { e.printStackTrace(); }
+        } catch (IOException e) { log.error("Error processing JSON file", e); }
     }
 
     @Override
@@ -66,7 +69,7 @@ public class JSONParsingTomorrowWeather extends JSONParsing {
                 jsonReader.endObject();
             }
             jsonReader.endArray();
-        } catch (Exception e) { e.printStackTrace(); }
+        } catch (IOException e) { log.error("Error processing JSON file", e); }
     }
 
     @Override
@@ -85,7 +88,7 @@ public class JSONParsingTomorrowWeather extends JSONParsing {
             }
             jsonReader.endArray();
             weatherList.add(weather);
-        } catch (Exception e) { e.printStackTrace(); }
+        } catch (IOException e) { log.error("Error processing JSON file", e); }
     }
 
     @Override
