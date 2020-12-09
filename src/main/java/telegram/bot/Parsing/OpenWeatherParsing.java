@@ -36,6 +36,7 @@ public class OpenWeatherParsing {
                 return "Такого города не существует.\nПовторите попытку";
             jsonParsingCurrentWeather = new JSONParsingCurrentWeather();
             jsonParsingCurrentWeather.readJSON(urlConnection);
+            urlConnection.disconnect();
             return jsonParsingCurrentWeather.toString();
         } catch (Exception e) { log.error("Connection to the weather service failed", e); }
         return null;
@@ -49,6 +50,7 @@ public class OpenWeatherParsing {
                 return "Такого города не существует.\nПовторите попытку";
             jsonParsingCurrentWeather = new JSONParsingCurrentWeather();
             jsonParsingCurrentWeather.readJSON(urlConnection);
+            urlConnection.disconnect();
             lat = jsonParsingCurrentWeather.getLat();
             lon = jsonParsingCurrentWeather.getLon();
             url = new URL("https://api.openweathermap.org/data/2.5/onecall?lat=" + lat + "&lon=" + lon +
@@ -61,6 +63,7 @@ public class OpenWeatherParsing {
             jsonParsingTomorrowWeather.setId(jsonParsingCurrentWeather.getId());
             jsonParsingTomorrowWeather.setCountry(jsonParsingCurrentWeather.getCountry());
             jsonParsingTomorrowWeather.readJSON(urlConnection);
+            urlConnection.disconnect();
             return jsonParsingTomorrowWeather.toString();
         } catch (Exception e) { log.error("Connection to the weather service failed", e); }
         return null;
@@ -74,6 +77,7 @@ public class OpenWeatherParsing {
                 return "Такого города не существует.\nПовторите попытку";
             jsonParsingCurrentWeather = new JSONParsingCurrentWeather();
             jsonParsingCurrentWeather.readJSON(urlConnection);
+            urlConnection.disconnect();
             lat = jsonParsingCurrentWeather.getLat();
             lon = jsonParsingCurrentWeather.getLon();
             url = new URL("https://api.openweathermap.org/data/2.5/onecall?lat=" + lat + "&lon=" + lon +
@@ -86,6 +90,7 @@ public class OpenWeatherParsing {
             jsonParsingWeekWeather.setId(jsonParsingCurrentWeather.getId());
             jsonParsingWeekWeather.setCountry(jsonParsingCurrentWeather.getCountry());
             jsonParsingWeekWeather.readJSON(urlConnection);
+            urlConnection.disconnect();
             return jsonParsingWeekWeather.toString();
         } catch (Exception e) { log.error("Connection to the weather service failed", e); }
         return null;
