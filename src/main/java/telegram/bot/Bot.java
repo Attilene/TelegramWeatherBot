@@ -119,13 +119,13 @@ public class Bot extends TelegramLongPollingBot {
             else if ((getStr.equals("/subscribe") || getStr.equals("subscribe")
                     || getStr.equalsIgnoreCase("подписаться на рассылку")) & subscribe.get(chatId)) {
                 sendMsg(users.get(chatId), String.valueOf(chatId), "Вы уже подписались на ежедневную рассылку");
-                log.info("Subscription issued to the " + users.get(chatId));
+                log.info(users.get(chatId) + " has already subscribed");
             }
             else if ((getStr.equals("/unsubscribe") | getStr.equals("unsubscribe")
                     | getStr.equalsIgnoreCase("отписаться от рассылки")) & subscribe.get(chatId)) {
                 sendMsg(users.get(chatId), String.valueOf(chatId), "Вы отписались от ежедневной рассылки прогноза погоды за сутки");
                 subscribe.put(chatId, false);
-                log.info(users.get(chatId) + " has already subscribed");
+                log.info(users.get(chatId) + " canceled the subscription");
             }
             else if ((getStr.equals("/unsubscribe") || getStr.equals("unsubscribe")
                     || getStr.equalsIgnoreCase("отписаться от рассылки")) & !subscribe.get(chatId)) {
