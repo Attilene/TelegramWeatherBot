@@ -21,7 +21,6 @@ import java.util.Map;
 
 public class Bot extends TelegramLongPollingBot {
     private static final Logger log = LogManager.getLogger(Bot.class);
-    private static final Map<String, String> getenv = System.getenv();
     Map<Long, Boolean> subscribe;
     Map<Long, Boolean> start;
     Map<Long, String> city;
@@ -32,13 +31,10 @@ public class Bot extends TelegramLongPollingBot {
     String subTime, botUsername, botToken;
     int subTimeH, subTimeM, subTimeS;
 
-//    public Bot(String botUsername, String botToken){
     public Bot(){
         super();
         botUsername = "Bakanchik_Weather_bot";
         botToken = "1449620104:AAEf-XIegq8h6P0JqzqnyzuutZuAAlav3ko";
-//        this.botUsername = botUsername;
-//        this.botToken = botToken;
         subscribe = new HashMap<>();
         users = new HashMap<>();
         start = new HashMap<>();
@@ -195,7 +191,6 @@ public class Bot extends TelegramLongPollingBot {
             ApiContextInitializer.init();
             TelegramBotsApi botApi = new TelegramBotsApi();
             log.info("Registering Bot...");
-    //        Bot bot = new Bot(getenv.get("BOT_USERNAME"), getenv.get("BOT_TOKEN"));
             Bot bot = new Bot();
             botApi.registerBot(bot);
             log.info("Bot is ready for work!");
