@@ -8,6 +8,8 @@ import telegram.bot.Parsing.JSONProcessing.JSONParsingWeekWeather;
 
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 
 public class OpenWeatherParsing {
     private final Logger log = LogManager.getLogger(OpenWeatherParsing.class);
@@ -22,6 +24,10 @@ public class OpenWeatherParsing {
 
     public String getApiToken() { return apiToken; }
 
+    private String encode(String string) {
+        return URLEncoder.encode(string, StandardCharsets.UTF_8);
+    }
+
     public void getURLConnectionByCurWeather(String city) {
         try {
             url = new URL("http://api.openweathermap.org/data/2.5/weather?q=" + city + "&appid=" + apiToken);
@@ -31,7 +37,7 @@ public class OpenWeatherParsing {
 
     public String getCurWeatherByCity(String city) {
         try {
-            getURLConnectionByCurWeather(city);
+            getURLConnectionByCurWeather(encode(city));
             if (urlConnection.getResponseMessage().equals("Not Found"))
                 return "Такого города не существует.\nПовторите попытку";
             jsonParsingCurrentWeather = new JSONParsingCurrentWeather();
@@ -45,7 +51,7 @@ public class OpenWeatherParsing {
     public String getTomWeatherByCity(String city){
         try {
             Double lat, lon;
-            getURLConnectionByCurWeather(city);
+            getURLConnectionByCurWeather(encode(city));
             if (urlConnection.getResponseMessage().equals("Not Found"))
                 return "Такого города не существует.\nПовторите попытку";
             jsonParsingCurrentWeather = new JSONParsingCurrentWeather();
@@ -72,7 +78,7 @@ public class OpenWeatherParsing {
     public String getWeekWeatherByCity(String city) {
         try {
             Double lat, lon;
-            getURLConnectionByCurWeather(city);
+            getURLConnectionByCurWeather(encode(city));
             if (urlConnection.getResponseMessage().equals("Not Found"))
                 return "Такого города не существует.\nПовторите попытку";
             jsonParsingCurrentWeather = new JSONParsingCurrentWeather();

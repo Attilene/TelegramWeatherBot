@@ -132,15 +132,19 @@ public class Bot extends TelegramLongPollingBot {
                 sendMsg(users.get(chatId), String.valueOf(chatId), "Вы уже отписались от ежедневной рассылки");
                 log.info("Subscription has already been canceled for the " + users.get(chatId));
             }
-            else if (start.get(chatId)){
-                if (!openWeatherParsing.getCurWeatherByCity(getStr).equals("Такого города не существует.\nПовторите попытку")) {
-                    log.info("{} changed their current location to {}", users.get(chatId), getStr);
-                    getWeatherByString(users.get(chatId), String.valueOf(chatId), getStr);
-                    city.put(chatId, getStr);
-                }
-                else {
-                    sendMsg(users.get(chatId), String.valueOf(chatId), "Такого города не существует\nПовторите попытку");
-                    log.warn(users.get(chatId) + " is trying to get the weather for an unknown location '" + getStr + "'.");
+            else if (start.get(chatId)) {
+                if (getStr.length() <= 80) {
+                    if (!openWeatherParsing.getCurWeatherByCity(getStr).equals("Такого города не существует.\nПовторите попытку")) {
+                        log.info("{} changed their current location to {}", users.get(chatId), getStr);
+                        getWeatherByString(users.get(chatId), String.valueOf(chatId), getStr);
+                        city.put(chatId, getStr);
+                    } else {
+                        sendMsg(users.get(chatId), String.valueOf(chatId), "Такого города не существует\nПовторите попытку");
+                        log.warn(users.get(chatId) + " is trying to get the weather for an unknown location '" + getStr + "'");
+                    }
+                } else {
+                    sendMsg(users.get(chatId), String.valueOf(chatId), "Слишком длинное название города\nПовторите попытку");
+                    log.warn(users.get(chatId) + " entered the city name too long: '" + getStr + "'");
                 }
             }
         }
