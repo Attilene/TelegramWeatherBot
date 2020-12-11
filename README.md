@@ -7,12 +7,13 @@ based on the city you enter
 
 Weather information is taken from the [OpenWeather](https://openweathermap.org/) website
 
-<h4> Required libraries for the bot to work: </h4>
+<h3> Required libraries and software packages: </h3>
 
 * [JDK 15.0.1](https://jdk.java.net/15/)
 * [TelegramBots 4.9.2](https://github.com/rubenlagus/TelegramBots/releases/tag/v4.9)
 * [Gson 2.8.6](https://github.com/google/gson/releases/tag/gson-parent-2.8.6)
 * [Log4j 2](https://logging.apache.org/log4j/2.x/download.html)
+* [PostgreSQL 13](https://www.postgresql.org/download/windows/)
 
 <h3>Run:</h3>
 
@@ -21,12 +22,12 @@ Weather information is taken from the [OpenWeather](https://openweathermap.org/)
 3. Find **@Bakanchik_Weather_bot** in **Telegram**
 4. Write `/start` in a chat
 
-<h2> Author: </h2> 
+<h3> Author: </h3> 
 <h5>Bakanov Artem</h5>
 Student of Financial University
 
 Faculty of Information Technology and Big Data Analysis
 
-<h4> Version: 1.2 </h4>
+<h4> Version: 1.3 </h4>
 
-<h6> 09.12.2020 </h6>
+<h6> 12.12.2020 </h6>
