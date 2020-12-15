@@ -18,9 +18,12 @@ Weather information is taken from the [OpenWeather](https://openweathermap.org/)
 <h3>Run:</h3>
 
 1. Connect the required libraries
-2. Run `Bot.java`
+2. Run `InitializeBot.java`
 3. Find **@Bakanchik_Weather_bot** in **Telegram**
 4. Write `/start` in a chat
+
+### Deploying:
+The bot is already running on the [heroku.com](https://www.heroku.com/) 
 
 <h3> Author: </h3> 
 <h5>Bakanov Artem</h5>
