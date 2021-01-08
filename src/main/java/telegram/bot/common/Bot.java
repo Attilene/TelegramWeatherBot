@@ -10,7 +10,11 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMar
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardButton;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardRow;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
+import telegram.bot.common.DBMS.models.City;
+import telegram.bot.common.DBMS.models.CityByUser;
 import telegram.bot.common.DBMS.models.User;
+import telegram.bot.common.DBMS.services.CityByUserService;
+import telegram.bot.common.DBMS.services.CityService;
 import telegram.bot.common.DBMS.services.UserService;
 import telegram.bot.common.Parsing.OpenWeatherParsing;
 
@@ -20,7 +24,10 @@ import java.util.List;
 public class Bot extends TelegramLongPollingBot {
     private static final Logger log = LogManager.getLogger(Bot.class);
     UserService userService;
+    CityService cityService;
+    CityByUserService cityByUserService;
     User user;
+    CityByUser cityByUser;
     OpenWeatherParsing openWeatherParsing;
     ReplyKeyboardMarkup replyKeyboardMarkup;
     List<KeyboardRow> keyboard;
@@ -32,6 +39,8 @@ public class Bot extends TelegramLongPollingBot {
         botUsername = "Bakanchik_Weather_bot";
         botToken = "1449620104:AAEf-XIegq8h6P0JqzqnyzuutZuAAlav3ko";
         userService = new UserService();
+        cityService = new CityService();
+        cityByUserService = new CityByUserService();
         openWeatherParsing = new OpenWeatherParsing();
         subTime = "09:00:00";
         subTimeH = 9;
@@ -79,6 +88,7 @@ public class Bot extends TelegramLongPollingBot {
             String getStr = inMsg.getText();
             user = userService.findUser(chatId);
             if (user == null) {
+                boolean flag = false;
                 user = new User();
                 user.setId(chatId);
                 user.setFirst_name(inMsg.getFrom().getFirstName());
@@ -89,6 +99,15 @@ public class Bot extends TelegramLongPollingBot {
                 user.setSubscribe(false);
                 user.setSubTime(subTime);
                 userService.saveUser(user);
+                for (City city: cityService.findAllCities())
+                    if (city.getName().equals(user.getCity().toUpperCase())) {
+                        flag = true;
+                        break;
+                    }
+                if (!flag) {
+                    City city = new City(user.getCity().toUpperCase());
+                    cityService.saveCity(city);
+                }
             }
             if ((getStr.equals("/start") | getStr.equals("start") | getStr.equalsIgnoreCase("старт"))
                     & !user.getStarting()) {
@@ -141,10 +160,26 @@ public class Bot extends TelegramLongPollingBot {
             else if (user.getStarting()) {
                 if (getStr.length() <= 80) {
                     if (!openWeatherParsing.getCurWeatherByCity(getStr).equals("Такого города не существует.\nПовторите попытку")) {
+                        boolean flag = false;
                         log.info("| {} | Changed their current location to {}", user.getUser_name(), getStr);
                         getWeatherByString(chatId, user.getUser_name(), getStr);
                         user.setCity(getStr);
                         userService.updateUser(user);
+                        cityByUser = new CityByUser();
+                        City cityName = null;
+                        for (City city: cityService.findAllCities())
+                            if (city.getName().equals(user.getCity().toUpperCase())) {
+                                cityName = city;
+                                flag = true;
+                                break;
+                            }
+                        if (!flag) {
+                            cityName = new City(user.getCity().toUpperCase());
+                            cityService.saveCity(cityName);
+                        }
+                        cityByUser.setUser(user);
+                        cityByUser.setCity(cityName);
+                        cityByUserService.saveCityByUser(cityByUser);
                     } else {
                         sendMsg(chatId, user.getUser_name(), "Такого города не существует\nПовторите попытку");
                         log.warn("| " + user.getUser_name() + " | Try to get the weather for an unknown location '" + getStr + "'");

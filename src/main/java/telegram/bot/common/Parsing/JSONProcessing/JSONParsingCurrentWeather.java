@@ -87,6 +87,7 @@ public class JSONParsingCurrentWeather extends JSONParsing {
                 "Широта: " + lat + "; " +
                 "Долгота: " + lon + "\n" +
                 "Страна: " + country + "\n" +
+                "Текущее время: " + new Date().toString() + "\n" +
                 "Погода: ";
         for (String weath: weather)
             s = s + weath + ",";
@@ -98,8 +99,7 @@ public class JSONParsingCurrentWeather extends JSONParsing {
                 "Влажность: " + humid + "%\n" +
                 "Давление: " + press + " hPa\n" +
                 "Ветер: " + speed + " м/с, " + deg + " градусов" + "\n" +
-                "Облачность: " + clouds + "%\n" +
-                "Текущее время: " + new Date().toString();
+                "Облачность: " + clouds + "%";
         return s;
     }
 }

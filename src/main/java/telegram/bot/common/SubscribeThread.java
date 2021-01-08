@@ -45,7 +45,6 @@ public class SubscribeThread {
                     for (User user: users)
                         if (user.getSubscribe()) {
                             bot.getWeatherByString(user.getId(), user.getUser_name(), user.getCity());
-                            System.out.println(c.getTime());
                             log.info("| " + user.getUser_name() + " | Subscription weather forecast sent");
                         }
             }

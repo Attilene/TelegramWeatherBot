@@ -31,6 +31,6 @@ Student of Financial University
 
 Faculty of Information Technology and Big Data Analysis
 
-<h4> Version: 1.3 </h4>
+<h4> Version: 1.4 </h4>
 
-<h6> 12.12.2020 </h6>
+<h6> 08.01.2021 </h6>

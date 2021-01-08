@@ -5,6 +5,8 @@ import org.apache.logging.log4j.Logger;
 import org.hibernate.SessionFactory;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.Configuration;
+import telegram.bot.common.DBMS.models.City;
+import telegram.bot.common.DBMS.models.CityByUser;
 import telegram.bot.common.DBMS.models.User;
 
 public class HibernateSessionFactoryUtil {
@@ -18,6 +20,8 @@ public class HibernateSessionFactoryUtil {
             try {
                 Configuration configuration = new Configuration().configure("TelegramWeatherBotDB.cfg.xml");
                 configuration.addAnnotatedClass(User.class);
+                configuration.addAnnotatedClass(City.class);
+                configuration.addAnnotatedClass(CityByUser.class);
                 StandardServiceRegistryBuilder builder = new StandardServiceRegistryBuilder().applySettings(configuration.getProperties());
                 sessionFactory = configuration.buildSessionFactory(builder.build());
             } catch (Exception e) { log.error("Session factory launch failed", e); }
