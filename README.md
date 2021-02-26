@@ -19,7 +19,7 @@ Weather information is taken from the [OpenWeather](https://openweathermap.org/)
 
 1. Connect the required libraries
 2. Run `InitializeBot.java`
-3. Find **@Bakanchik_Weather_bot** in **Telegram**
+3. Find **@attilene_weather_bot** in **Telegram**
 4. Write `/start` in a chat
 
 ### Deploying:
